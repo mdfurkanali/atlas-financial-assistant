@@ -5,7 +5,7 @@ Atlas is an AI-powered financial assistant that lives inside Telegram. It helps 
 ## Live Demo
 
 * Telegram bot: [@atlas_finance_demo_bot](https://t.me/atlas_finance_demo_bot)
-* Demo video: - Demo video: [Watch the Atlas demonstration](https://drive.google.com/file/d/1V1ZiSPMOGY94GoazJ5JMCe4g3-Wgk9fo/view?usp=sharing)
+* Demo video: [Watch the Atlas demonstration](https://drive.google.com/file/d/1V1ZiSPMOGY94GoazJ5JMCe4g3-Wgk9fo/view?usp=sharing)
 
 ## Product Overview
 
