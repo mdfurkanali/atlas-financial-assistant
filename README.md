@@ -1,291 +1,355 @@
 # Atlas Financial Assistant
 
-Atlas is an AI-powered financial assistant that lives inside Telegram. It helps finance professionals monitor companies, research market developments, analyze financial documents, and receive personalized financial intelligence through natural conversations.
+Atlas is an AI-powered financial assistant that lives inside Telegram. It helps finance professionals monitor companies, retrieve financial information, analyze reports, remember research preferences, and receive proactive daily intelligence through natural conversations.
 
-Atlas is designed to feel like an experienced financial analyst rather than a command-based chatbot.
+## Live Demo
 
-## Features
+* Telegram bot: [@atlas_finance_demo_bot](https://t.me/atlas_finance_demo_bot)
+* Demo video: Add the public demo-video link here
 
-- Natural Telegram conversations
-- Personalized conversational onboarding
-- Persistent conversation memory
-- Live stock prices and daily price movements
-- Company-news retrieval and relevance filtering
-- Concise explanations of why financial developments matter
-- PDF financial-report summaries
-- Follow-up questions with document page references
-- Voice-message transcription and processing
-- Financial chart, table, and image analysis
-- Personalized company watchlists
-- Scheduled daily financial briefings
-- Multi-user briefing schedules and preferences
-- Graceful handling of API limits and unavailable information
+## Product Overview
 
-## Example Conversations
+Finance professionals frequently switch between market-data platforms, news websites, reports, spreadsheets, and productivity tools. Atlas brings the most important parts of that workflow into one conversational Telegram experience.
 
-Users can communicate naturally without remembering commands:
+Atlas is designed to feel like an experienced financial analyst rather than a command-based chatbot. Users can communicate using text, voice messages, images, and financial documents without navigating menus or remembering commands.
 
-- “Track Nvidia, AMD, and Microsoft.”
-- “What is my watchlist?”
-- “What is Nvidia’s current stock price?”
-- “What important Nvidia news should I know about?”
-- “Send my daily briefing at 8:00 AM.”
-- “What do you remember about my research focus?”
-- “What are the biggest risks in this annual report?”
-- “Explain the employee benefit liability and cite the page.”
-- “What changed the most in this financial chart?”
+The assistant prioritizes concise and decision-relevant insights. It explains why information matters and remains silent when a proactive update does not contain anything material.
 
-Users can also send voice messages, financial images, charts, and PDF reports.
+## Core Features
+
+### Natural Financial Conversations
+
+Users can ask financial questions naturally without slash commands, menus, or predefined prompts.
+
+Examples:
+
+* What is Nvidia’s current stock price?
+* What important Nvidia news should I know about?
+* Compare Nvidia and AMD from a semiconductor analyst’s perspective.
+* What do you remember about my research focus?
+
+### Live Financial Information
+
+Atlas uses Finnhub to retrieve verified market information, including:
+
+* Stock prices
+* Daily price changes
+* Session ranges
+* Previous closing prices
+* Company-specific financial news
+* Source and quote timestamps
+
+Atlas does not invent live financial figures when verified information is unavailable.
+
+### Persistent Personalization
+
+Atlas stores user information and conversation context in Supabase PostgreSQL.
+
+It can remember:
+
+* Research focus
+* Companies and sectors of interest
+* Conversation history
+* Watchlist companies
+* Briefing schedule
+* User timezone
+* Previous briefing delivery
+
+Each Telegram user receives separate preferences and memory.
+
+### Financial News Intelligence
+
+Atlas retrieves relevant company news and uses AI to identify the most decision-relevant developments.
+
+Instead of simply forwarding headlines, it explains:
+
+* What happened
+* Why it matters
+* Which company or industry exposure may be affected
+* The source and publication time
+
+### Financial Document Intelligence
+
+Users can upload PDF financial reports directly in Telegram.
+
+Atlas can:
+
+* Produce concise executive summaries
+* Identify major financial risks
+* Extract important figures
+* Explain financial performance
+* Answer follow-up questions
+* Cite relevant document pages
+
+The uploaded document remains available for follow-up analysis during the active application session.
+
+### Image and Chart Analysis
+
+Users can upload financial charts, tables, presentations, or screenshots.
+
+Atlas extracts the visible information and explains:
+
+* Important changes
+* Unusual trends
+* Margin movements
+* Revenue and profitability divergence
+* Decision-relevant implications
+
+### Voice Messages
+
+Users can send Telegram voice messages instead of typing.
+
+Atlas transcribes the message and routes the request through the same conversational and financial-data workflows used for text requests.
+
+### Watchlists and Proactive Briefings
+
+Users can naturally create and update their watchlists.
+
+Examples:
+
+* Track Nvidia, AMD, and Microsoft.
+* Stop tracking Microsoft.
+* What is my watchlist?
+* Send my daily briefing at 8:00 AM India time.
+
+Atlas schedules personalized briefings using each user’s watchlist and preferred time. The briefing combines relevant market performance and company news.
+
+If no material development is found, Atlas remains silent to avoid unnecessary notifications.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-    User[Telegram User] --> Bot[Atlas Telegram Bot]
-
-    Bot --> Gemini[Gemini AI]
-    Bot --> Finnhub[Finnhub API]
-    Bot --> Database[Supabase PostgreSQL]
-    Bot --> Documents[PDF Processing]
-    Bot --> Scheduler[Briefing Scheduler]
-
-    Scheduler --> Finnhub
-    Scheduler --> Gemini
-    Scheduler --> User
-
-    Gemini --> Bot
-    Finnhub --> Bot
-    Database --> Bot
-    Documents --> Bot
+flowchart TD
+    U[Telegram user] --> T[Telegram Bot API]
+    T --> A[Atlas Python application]
+    A --> G[Gemini AI]
+    A --> F[Finnhub API]
+    A --> S[Supabase PostgreSQL]
+    A --> J[Background briefing scheduler]
+    J --> T
 ```
 
 ## Technology Stack
 
-- Python — backend and workflow orchestration
-- aiogram — Telegram bot integration
-- Gemini API — conversations, transcription, document analysis, and image analysis
-- Finnhub API — stock quotes and company news
-- Supabase PostgreSQL — users, conversations, watchlists, and briefing preferences
-- psycopg — PostgreSQL database connectivity
-- pypdf — PDF text extraction
-- python-dotenv — environment-variable management
-- asyncio — background scheduling and non-blocking operations
-- Git and GitHub — version control and source-code backup
+| Component                    | Technology                      |
+| ---------------------------- | ------------------------------- |
+| Primary interface            | Telegram                        |
+| Bot framework                | aiogram                         |
+| Backend language             | Python                          |
+| AI and multimodal processing | Google Gemini                   |
+| Financial market data        | Finnhub                         |
+| Database                     | Supabase PostgreSQL             |
+| Database driver              | psycopg                         |
+| PDF processing               | Python PDF-processing libraries |
+| Background jobs              | Asynchronous Python scheduler   |
+| Cloud deployment             | Google Cloud Compute Engine     |
+| Process management           | systemd                         |
+| Operating system             | Debian GNU/Linux 12             |
+| Version control              | Git and GitHub                  |
 
 ## Project Structure
 
 ```text
-atlas-financial-assistant/
+financial-assistant/
 ├── bot.py
 ├── database.py
-├── financial_data.py
 ├── document_data.py
+├── financial_data.py
 ├── requirements.txt
+├── .env.example
+├── .gitignore
 ├── test_database.py
 ├── test_gemini.py
-├── .gitignore
 └── README.md
 ```
 
-### Main Components
+### Main Modules
 
-- `bot.py` contains Telegram handlers, AI workflows, media processing, personalization, and the briefing scheduler.
-- `database.py` manages users, messages, watchlists, and briefing preferences.
-- `financial_data.py` retrieves stock quotes and company news from Finnhub.
-- `document_data.py` extracts readable text from uploaded PDF files.
-- `requirements.txt` contains the required Python packages.
+* `bot.py` manages Telegram conversations, AI generation, multimodal messages, and scheduled briefings.
+* `database.py` manages users, messages, watchlists, briefing preferences, and persistent memory.
+* `financial_data.py` retrieves and formats stock quotes and company news.
+* `document_data.py` extracts and prepares PDF content for financial analysis.
 
-## Database Structure
+## Local Setup
 
-Atlas uses the following PostgreSQL tables:
+### Prerequisites
 
-- `users` — Telegram identity and profile information
-- `messages` — persistent conversation history
-- `watchlist` — companies monitored by each user
-- `briefing_preferences` — briefing status, time, timezone, and last delivery date
-
-## Installation
+* Python 3.11 or newer
+* Git
+* Telegram bot token
+* Gemini API key
+* Finnhub API key
+* Supabase PostgreSQL database
 
 ### 1. Clone the repository
 
-```powershell
-git clone https://github.com/YOUR_USERNAME/atlas-financial-assistant.git
-Set-Location "atlas-financial-assistant"
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd atlas-financial-assistant
 ```
-
-Replace `YOUR_USERNAME` with your GitHub username.
 
 ### 2. Create a virtual environment
 
+Windows PowerShell:
+
 ```powershell
 python -m venv .venv
+.venv\Scripts\Activate.ps1
 ```
 
-### 3. Activate the environment on Windows
+Linux or macOS:
 
-```powershell
-.\.venv\Scripts\Activate.ps1
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-If PowerShell blocks script execution:
+### 3. Install dependencies
 
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-Then activate the environment again.
-
-### 4. Install dependencies
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-## Environment Variables
+### 4. Configure environment variables
 
 Create a `.env` file in the project root:
 
 ```env
-TELEGRAM_BOT_TOKEN=
-GEMINI_API_KEY=
-GEMINI_MODEL=gemini-3.5-flash-lite
-FINNHUB_API_KEY=
-DATABASE_URL=
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your_supported_gemini_model
+FINNHUB_API_KEY=your_finnhub_api_key
+DATABASE_URL=your_supabase_postgresql_connection_string
 ```
 
-Required services:
+Never commit the `.env` file or expose its contents.
 
-- Telegram BotFather for the Telegram bot token
-- Google AI Studio for a Gemini API key
-- Finnhub for financial-market data
-- Supabase for PostgreSQL storage
+### 5. Start Atlas
 
-Never commit `.env`. It contains private credentials.
-
-## Running Atlas
-
-Start the bot:
-
-```powershell
+```bash
 python bot.py
 ```
 
-The terminal should display a message indicating that Atlas is polling Telegram.
+Open Telegram and begin a conversation with the bot.
 
-Keep the terminal running while using the bot. Stop it with:
+## Google Cloud Deployment
 
-```text
-Ctrl+C
+Atlas is deployed continuously on Google Cloud Compute Engine using:
+
+* E2 `e2-micro` virtual machine
+* `us-central1` region
+* Debian GNU/Linux 12
+* 10 GB standard persistent disk
+* Python virtual environment
+* Telegram long polling
+* A protected server-side `.env` file
+* A `systemd` background service
+
+The service automatically starts when the VM boots and restarts Atlas if the process exits unexpectedly.
+
+Because Atlas uses Telegram long polling, it does not require an exposed web application port or an HTTP webhook.
+
+Example service-management commands:
+
+```bash
+sudo systemctl status atlas-bot
+sudo systemctl restart atlas-bot
+sudo journalctl -u atlas-bot -n 50 --no-pager
 ```
 
-## Product Experience
+The cloud VM should be the only active polling instance. Running the same Telegram token locally and in the cloud simultaneously may cause polling conflicts.
 
-### Onboarding
+## Example Judge Workflows
 
-Atlas begins with a short natural conversation to understand the user’s role, sectors, companies, and research preferences.
+### Memory
 
-### Market Intelligence
+```text
+I am an equity research analyst covering semiconductor companies.
+```
 
-Atlas retrieves verified stock-price information from Finnhub and displays the quote timestamp and source.
+```text
+I focus mostly on Nvidia.
+```
 
-### Company News
+```text
+What do you remember about my research focus?
+```
 
-Atlas filters company news for relevance, selects decision-relevant developments, attributes claims, and explains why they may matter.
+### Live Market Data
 
-### Document Intelligence
+```text
+What is Nvidia's current stock price?
+```
 
-Users can upload PDF financial reports. Atlas extracts the text, creates an executive summary, and answers follow-up questions with page references.
+### Financial News
 
-### Voice Messages
+```text
+What important Nvidia news should I know about?
+```
 
-Atlas transcribes Telegram voice messages and routes the resulting request through the appropriate price, news, document, or conversational workflow.
+### Company Comparison
 
-### Image Intelligence
+```text
+Compare Nvidia and AMD from the perspective of a semiconductor analyst.
+```
 
-Users can upload financial charts, tables, slides, and screenshots. Atlas extracts readable figures, identifies trends, and communicates uncertainty when information is unclear.
+### Document Analysis
 
-### Daily Briefings
+Upload a financial PDF and ask:
 
-Users can naturally create a watchlist and select a briefing time. Atlas checks each user’s schedule and sends a personalized briefing when material developments exist.
+```text
+Identify the three biggest financial risks and cite the relevant pages.
+```
 
-## Reliability Principles
+### Chart Analysis
 
-- Never invent stock prices, financial figures, dates, news, or sources.
-- Retrieve live information when local knowledge is insufficient.
-- Clearly attribute third-party news claims.
-- Do not imply that third-party coverage is independently verified.
-- Report price movements and news separately.
-- Do not claim that news caused a price movement without supporting evidence.
-- Communicate uncertainty when information cannot be read or verified.
-- Remain silent when no material daily update exists.
-- Keep Telegram responses concise and immediately useful.
+Upload a financial chart and ask:
+
+```text
+What changed the most, and why does it matter?
+```
+
+### Watchlist and Briefing
+
+```text
+Track Nvidia, AMD, and Microsoft.
+```
+
+```text
+Send my daily briefing at 8:00 AM India time.
+```
+
+## Product Design Principles
+
+Atlas follows these principles:
+
+* Every interaction should reduce manual financial research.
+* Responses should be concise and immediately useful.
+* Verified financial data should be preferred over model memory.
+* Important developments should include an explanation of why they matter.
+* The experience should remain conversational rather than command-driven.
+* Proactive intelligence should prioritize quality over frequency.
+* The assistant should communicate uncertainty instead of inventing information.
 
 ## Security
 
-- Credentials are stored in `.env`.
-- `.env` and `.venv` are excluded through `.gitignore`.
-- Database connections require SSL.
-- User-specific data is separated using Telegram user IDs.
-- API keys and database passwords are never included in source code.
+* Secrets are stored in environment variables.
+* `.env` and virtual-environment files are excluded from Git.
+* Database connections use encrypted transport.
+* Telegram users have separate memory and preferences.
+* API keys, database credentials, VM addresses, and cloud project identifiers are not included in this repository.
+* The cloud `.env` file is restricted using operating-system file permissions.
 
-## Prototype Limitations
+## Current Prototype Limitations
 
-- PDF text is retained in memory only while the bot process is running.
-- Scanned PDFs without readable text may require OCR support.
-- The company-to-ticker mapping currently covers selected demonstration companies.
-- Free API tiers have request and rate limits.
-- Daily briefings require the bot process to remain running.
-- The prototype is not designed for production trading or order execution.
-
-## Future Improvements
-
-- Persistent financial-document storage
-- SEC EDGAR filing integration
-- Earnings calendars and filing alerts
-- Portfolio monitoring
-- Configurable materiality thresholds
-- Email and calendar integrations
-- Improved source-ranking and duplicate-news detection
-- Cloud deployment with continuous availability
+* Financial-data availability depends on Finnhub coverage and rate limits.
+* AI responses depend on Gemini availability and quota limits.
+* Uploaded PDF context is held in application memory and is cleared after a service restart.
+* Daily briefings depend on available market data and may remain silent when no material update is detected.
+* Gmail, Google Calendar, Google Drive, and Google Sheets integrations are not included in this prototype.
+* Atlas provides research assistance and does not execute trades.
 
 ## Disclaimer
 
-Atlas provides financial research assistance and informational summaries. It does not provide personalized investment advice, execute trades, or guarantee the accuracy of third-party information.
-
-## Author
-
-Developed as an AI Financial Assistant prototype for a finance-focused product and engineering challenge.
-
-## Cloud Deployment
-
-Atlas is deployed as a continuously running Telegram bot on Google Cloud Compute Engine.
-
-### Deployment Configuration
-
-* Google Cloud Compute Engine
-* Debian GNU/Linux 12
-* E2 `e2-micro` virtual machine
-* `us-central1` region
-* 10 GB standard persistent disk
-* Python virtual environment
-* `systemd` service for automatic startup and recovery
-* Telegram long polling
-* Environment variables stored in a protected `.env` file on the server
-
-The `systemd` service automatically starts Atlas when the VM boots and restarts the application if the process exits unexpectedly. The bot connects to Supabase for persistent user memory and preferences, Finnhub for financial data, and Gemini for conversational and multimodal intelligence.
-
-### Deployment Architecture
-
-```text
-Telegram User
-      |
-Telegram Bot API
-      |
-Atlas Python Application
-      |
-      +-- Gemini AI
-      +-- Finnhub Financial Data
-      +-- Supabase PostgreSQL
-```
-
-The deployed service supports continuous Telegram conversations and background jobs such as personalized scheduled briefings. API keys and database credentials are never committed to Git and are supplied through server-side environment variables.
+Atlas is a demonstration project for financial research and productivity. Its responses are for informational purposes only and should not be treated as investment, legal, accounting, or trading advice. Users should verify material financial information through primary sources before making decisions.
