@@ -255,3 +255,37 @@ Atlas provides financial research assistance and informational summaries. It doe
 ## Author
 
 Developed as an AI Financial Assistant prototype for a finance-focused product and engineering challenge.
+
+## Cloud Deployment
+
+Atlas is deployed as a continuously running Telegram bot on Google Cloud Compute Engine.
+
+### Deployment Configuration
+
+* Google Cloud Compute Engine
+* Debian GNU/Linux 12
+* E2 `e2-micro` virtual machine
+* `us-central1` region
+* 10 GB standard persistent disk
+* Python virtual environment
+* `systemd` service for automatic startup and recovery
+* Telegram long polling
+* Environment variables stored in a protected `.env` file on the server
+
+The `systemd` service automatically starts Atlas when the VM boots and restarts the application if the process exits unexpectedly. The bot connects to Supabase for persistent user memory and preferences, Finnhub for financial data, and Gemini for conversational and multimodal intelligence.
+
+### Deployment Architecture
+
+```text
+Telegram User
+      |
+Telegram Bot API
+      |
+Atlas Python Application
+      |
+      +-- Gemini AI
+      +-- Finnhub Financial Data
+      +-- Supabase PostgreSQL
+```
+
+The deployed service supports continuous Telegram conversations and background jobs such as personalized scheduled briefings. API keys and database credentials are never committed to Git and are supplied through server-side environment variables.
